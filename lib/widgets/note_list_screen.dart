@@ -31,7 +31,6 @@ class NoteList extends StatelessWidget {
           child: Card(
             color: Colors.lightGreen,
             child: ListTile(
-              //title: Text(snapshot.data!.docs[index].get('title')),
               title: Text(note.title ?? ""),
               subtitle: Text(note.description ?? ""),
             ),

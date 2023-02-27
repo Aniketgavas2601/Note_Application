@@ -4,16 +4,8 @@ class NotesModel {
   String id;
   String title;
   String description;
-  bool? isArchived;
 
-  NotesModel({required this.id, required this.title, required this.description,this.isArchived});
-
-  NotesModel copyWith(String id, String title, String description, bool? isArchived) => NotesModel(
-    id: id ?? this.id,
-    title: title ?? this.title,
-    description: description ?? this.description,
-    isArchived: isArchived ?? this.isArchived
-  );
+  NotesModel({required this.id, required this.title, required this.description});
 
   static NotesModel fromQuerySnapshot(QueryDocumentSnapshot<Map<String,dynamic>> e) {
     print("++++++++++++++++++++++++++++++++++++++++++++++++");
@@ -24,7 +16,7 @@ class NotesModel {
     final isArchived = e.data()['isArchived'];
     //print(title);
     print("==============================================");
-    return NotesModel(id: id, title: title, description: description, isArchived: false);
+    return NotesModel(id: id, title: title, description: description);
   }
 }
 
@@ -41,7 +33,6 @@ class LocalNoteModel{
         title = res['title'],
         description = res['description'],
         isSynced = res['isSynced'] == 1 ? true : false;
-  //isArchived = res['isArchived'];
 
   Map<String,dynamic> toMap(){
 
@@ -50,7 +41,6 @@ class LocalNoteModel{
       'title': title,
       'description': description,
       'isSynced': isSynced ? 1 : 0
-      //'isArchived': isArchived
     };
   }
 

@@ -52,17 +52,7 @@ class _HomePageState extends State<HomePage> {
       Navigator.pushNamed(context, routeMessage);
       print(routeMessage);
     });
-    //FirebaseNoteService.fetchNotes();
-    //setState(() {});
-
   }
-
-  // void savedSessionKey() async {
-  //   SharedPreferences preferences = await SharedPreferences.getInstance();
-  //   preferences.setBool('isLoggedIn', true);
-  // }
-
-  //List<NotesModel> noteList = [];
 
   Future<List<NotesModel>>? fetchNotes() async {
     return await FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).collection('notes').get().then((snapshot) {
@@ -95,15 +85,6 @@ class _HomePageState extends State<HomePage> {
                 } catch (e) {
                   print(e);
                 }
-                // FirebaseAuth.instance.signOut().then((value) async {
-                // SharedPreferences preferences = await SharedPreferences.getInstance();
-                // preferences.setBool('isLoggedIn', false);
-                //   if (mounted) {
-                //     Navigator.pushNamed(context, 'login');
-                //   }
-                // }).catchError((e) {
-                //   print(e);
-                // });
               },
               child: const Icon(
                 Icons.logout,

@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:login_app/models/user.dart';
 import 'package:login_app/screens/reminder_note_screen.dart';
 import 'package:login_app/screens/web_view_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
