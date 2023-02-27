@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:login_app/models/note.dart';
+import 'package:login_app/widgets/note_list_screen.dart';
 
 class SearchNotes extends StatefulWidget {
   const SearchNotes({Key? key}) : super(key: key);
@@ -11,7 +13,7 @@ class SearchNotes extends StatefulWidget {
 
 class _SearchNotesState extends State<SearchNotes> {
 
-  List searchResult = [];
+  List<NotesModel> searchResult = [];
 
   void searchFromFirebase(String query) async {
     
@@ -21,7 +23,7 @@ class _SearchNotesState extends State<SearchNotes> {
         .get();
 
     setState(() {
-      searchResult = result.docs.map((e) => e.data()).toList();
+      searchResult = result.docs.map((e) => NotesModel.fromQuerySnapshot(e)).toList();
     });
   }
 
@@ -47,19 +49,10 @@ class _SearchNotesState extends State<SearchNotes> {
           }, icon: const Icon(Icons.search)),
         ],
       ),
-      body: ListView.builder(
-          itemCount: searchResult.length,
-          itemBuilder: (context, index){
-            return GestureDetector(
-              onTap: (){
-                Navigator.pushNamed(context, 'homePage');
-              },
-              child: ListTile(
-                title: Text(searchResult[index]['title']),
-                subtitle: Text(searchResult[index]['description']),
-              ),
-            );
-      })
+      body: NoteList(noteList: searchResult,callback: (searchNote){
+
+      },)
+
     );
   }
 }

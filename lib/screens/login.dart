@@ -21,151 +21,612 @@ class _MyLoginState extends State<MyLogin> {
 
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+      body: OrientationBuilder(builder: (context, orientation){
+        if(orientation == Orientation.portrait){
+          return portraitMode();
+        }else{
+          return landScapeMode();
+        }
+      }),
+    );
+  }
+
+  Widget portraitMode(){
     return Container(
       decoration: const BoxDecoration(
           image: DecorationImage(
               image: AssetImage('themes/login.png'), fit: BoxFit.cover)),
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        body: Stack(
-          children: [
-            Container(
-              padding: const EdgeInsets.only(left: 35, top: 90),
-              child: const Text(
-                'Welcome\nBack',
-                style: TextStyle(color: Colors.white, fontSize: 33),
-              ),
-            ),
-            SingleChildScrollView(
-              child: Container(
-                padding: const EdgeInsets.only(top: 300, right: 35, left: 35),
-                child: Column(
-                  children: [
-                    TextField(
-                      decoration: InputDecoration(
-                          prefixIcon: const Icon(Icons.email),
-                          filled: true,
-                          fillColor: Colors.grey.shade100,
-                          hintText: 'Email',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          )),
-                      controller: emailController,
-                      onChanged: (value) {
-                        setState(() {
-                          email = value;
-                        });
-                      },
+        body: OrientationBuilder(
+          builder: (context,orientation){
+            if(orientation == Orientation.portrait){
+              return Stack(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.only(left: 35, top: 90),
+                    child: const Text(
+                      'Welcome\nBack',
+                      style: TextStyle(color: Colors.white, fontSize: 33),
                     ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    TextField(
-                      obscureText: true,
-                      controller: passwordController,
-                      decoration: InputDecoration(
-                          prefixIcon: const Icon(Icons.lock),
-                          filled: true,
-                          fillColor: Colors.grey.shade100,
-                          hintText: 'Password',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12))),
-                      onChanged: (value) {
-                        setState(() {
-                          password = value;
-                        });
-                      },
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        TextButton(
-                          onPressed: () async {
-                            String result = await FirebaseAuthService.signIn(email!, password!);
-                            print(result);
-                            if(result == 'Successfully login'){
-                              Navigator.of(context).pushReplacementNamed('homePage');
-                            }else{
-                              showDialog(context: context, builder: (context){
-                                return const AlertDialog(
-                                  title: Text('Enter Field Correctly'),
-                                );
-                              });
-                            }
-                          },
-                          child: const Text(
-                            'Sign In',
-                            style: TextStyle(
-                                fontSize: 27,
-                                fontWeight: FontWeight.w700,
-                                color: Color(0xff4c505b)),
-                          ),
-                        ),
-                        CircleAvatar(
-                          radius: 20,
-                          backgroundColor: const Color(0xff4c505b),
-                          child: IconButton(
-                            onPressed: () {},
-                            icon: const Icon(Icons.arrow_forward),
-                            color: Colors.white,
-                          ),
-                        )
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        TextButton(
-                            onPressed: () {
-                              Navigator.pushNamed(context, 'register');
+                  ),
+                  SingleChildScrollView(
+                    child: Container(
+                      padding: const EdgeInsets.only(top: 300, right: 35, left: 35),
+                      child: Column(
+                        children: [
+                          TextField(
+                            decoration: InputDecoration(
+                                prefixIcon: const Icon(Icons.email),
+                                filled: true,
+                                fillColor: Colors.grey.shade100,
+                                hintText: 'Email',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                )),
+                            controller: emailController,
+                            onChanged: (value) {
+                              setState(() {
+                                email = value;
+                              }
+                              );
                             },
-                            child: const Text(
-                              'Sign Up',
-                              style: TextStyle(
-                                decoration: TextDecoration.underline,
-                                fontSize: 18,
-                                color: Color(0xff4c505b),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          TextField(
+                            obscureText: true,
+                            controller: passwordController,
+                            decoration: InputDecoration(
+                                prefixIcon: const Icon(Icons.lock),
+                                filled: true,
+                                fillColor: Colors.grey.shade100,
+                                hintText: 'Password',
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12))),
+                            onChanged: (value) {
+                              setState(() {
+                                password = value;
+                              });
+                            },
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              TextButton(
+                                onPressed: () async {
+                                  String result = await FirebaseAuthService.signIn(email!, password!);
+                                  print(result);
+                                  if(result == 'Successfully login'){
+                                    Navigator.of(context).pushReplacementNamed('homePage');
+                                  }else{
+                                    showDialog(context: context, builder: (context){
+                                      return const AlertDialog(
+                                        title: Text('Enter Field Correctly'),
+                                      );
+                                    });
+                                  }
+                                },
+                                child: const Text(
+                                  'Sign In',
+                                  style: TextStyle(
+                                      fontSize: 27,
+                                      fontWeight: FontWeight.w700,
+                                      color: Color(0xff4c505b)),
+                                ),
                               ),
-                            )),
-                        TextButton(
-                            onPressed: () {},
-                            child: const Text(
-                              'Forgot Password',
-                              style: TextStyle(
-                                  decoration: TextDecoration.underline,
-                                  fontSize: 18,
-                                  color: Color(0xff4c505b)),
-                            )),
-                      ],
-                    ),
-                    ElevatedButton.icon(
-                      onPressed: () async {
-                        //SignIn with google
-                        signInWithGoogle(context);
-                      },
-                      label: const Text(
-                        'Sign In With Google',
-                        style: TextStyle(color: Colors.black54),
+                              CircleAvatar(
+                                radius: 20,
+                                backgroundColor: const Color(0xff4c505b),
+                                child: IconButton(
+                                  onPressed: () {},
+                                  icon: const Icon(Icons.arrow_forward),
+                                  color: Colors.white,
+                                ),
+                              )
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.pushNamed(context, 'register');
+                                  },
+                                  child: const Text(
+                                    'Sign Up',
+                                    style: TextStyle(
+                                      decoration: TextDecoration.underline,
+                                      fontSize: 18,
+                                      color: Color(0xff4c505b),
+                                    ),
+                                  )),
+                              TextButton(
+                                  onPressed: () {},
+                                  child: const Text(
+                                    'Forgot Password',
+                                    style: TextStyle(
+                                        decoration: TextDecoration.underline,
+                                        fontSize: 18,
+                                        color: Color(0xff4c505b)),
+                                  )),
+                            ],
+                          ),
+                          ElevatedButton.icon(
+                            onPressed: () async {
+                              //SignIn with google
+                              signInWithGoogle(context);
+                            },
+                            label: const Text(
+                              'Sign In With Google',
+                              style: TextStyle(color: Colors.black54),
+                            ),
+                            style: ButtonStyle(
+                                backgroundColor:
+                                MaterialStateProperty.all(Colors.grey[700])),
+                            icon: const FaIcon(
+                              FontAwesomeIcons.google,
+                              color: Colors.blue,
+                            ),
+                          ),
+                        ],
                       ),
-                      style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.grey[700])),
-                      icon: const FaIcon(
-                        FontAwesomeIcons.google,
-                        color: Colors.blue,
+                    ),
+                  )
+                ],
+              );
+            }else{
+              return Stack(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.only(left: 35, top: 90),
+                    child: const Text(
+                      'Welcome\nBack',
+                      style: TextStyle(color: Colors.white, fontSize: 33),
+                    ),
+                  ),
+                  SingleChildScrollView(
+                    child: Container(
+                      padding: const EdgeInsets.only(top: 300, right: 35, left: 35),
+                      child: Column(
+                        children: [
+                          TextField(
+                            decoration: InputDecoration(
+                                prefixIcon: const Icon(Icons.email),
+                                filled: true,
+                                fillColor: Colors.grey.shade100,
+                                hintText: 'Email',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                )),
+                            controller: emailController,
+                            onChanged: (value) {
+                              setState(() {
+                                email = value;
+                              }
+                              );
+                            },
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          TextField(
+                            obscureText: true,
+                            controller: passwordController,
+                            decoration: InputDecoration(
+                                prefixIcon: const Icon(Icons.lock),
+                                filled: true,
+                                fillColor: Colors.grey.shade100,
+                                hintText: 'Password',
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12))),
+                            onChanged: (value) {
+                              setState(() {
+                                password = value;
+                              });
+                            },
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              TextButton(
+                                onPressed: () async {
+                                  String result = await FirebaseAuthService.signIn(email!, password!);
+                                  print(result);
+                                  if(result == 'Successfully login'){
+                                    Navigator.of(context).pushReplacementNamed('homePage');
+                                  }else{
+                                    showDialog(context: context, builder: (context){
+                                      return const AlertDialog(
+                                        title: Text('Enter Field Correctly'),
+                                      );
+                                    });
+                                  }
+                                },
+                                child: const Text(
+                                  'Sign In',
+                                  style: TextStyle(
+                                      fontSize: 27,
+                                      fontWeight: FontWeight.w700,
+                                      color: Color(0xff4c505b)),
+                                ),
+                              ),
+                              CircleAvatar(
+                                radius: 20,
+                                backgroundColor: const Color(0xff4c505b),
+                                child: IconButton(
+                                  onPressed: () {},
+                                  icon: const Icon(Icons.arrow_forward),
+                                  color: Colors.white,
+                                ),
+                              )
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.pushNamed(context, 'register');
+                                  },
+                                  child: const Text(
+                                    'Sign Up',
+                                    style: TextStyle(
+                                      decoration: TextDecoration.underline,
+                                      fontSize: 18,
+                                      color: Color(0xff4c505b),
+                                    ),
+                                  )),
+                              TextButton(
+                                  onPressed: () {},
+                                  child: const Text(
+                                    'Forgot Password',
+                                    style: TextStyle(
+                                        decoration: TextDecoration.underline,
+                                        fontSize: 18,
+                                        color: Color(0xff4c505b)),
+                                  )),
+                            ],
+                          ),
+                          ElevatedButton.icon(
+                            onPressed: () async {
+                              //SignIn with google
+                              signInWithGoogle(context);
+                            },
+                            label: const Text(
+                              'Sign In With Google',
+                              style: TextStyle(color: Colors.black54),
+                            ),
+                            style: ButtonStyle(
+                                backgroundColor:
+                                MaterialStateProperty.all(Colors.grey[700])),
+                            icon: const FaIcon(
+                              FontAwesomeIcons.google,
+                              color: Colors.blue,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-            )
-          ],
+                  )
+                ],
+              );
+            }
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget landScapeMode(){
+    return Container(
+      decoration: const BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage('themes/login.png'), fit: BoxFit.cover)),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: OrientationBuilder(
+          builder: (context,orientation){
+            if(orientation == Orientation.portrait){
+              return Stack(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.only(left: 35, top: 90),
+                    child: const Text(
+                      'Welcome\nBack',
+                      style: TextStyle(color: Colors.white, fontSize: 33),
+                    ),
+                  ),
+                  SingleChildScrollView(
+                    child: Container(
+                      padding: const EdgeInsets.only(top: 300, right: 35, left: 35),
+                      child: Column(
+                        children: [
+                          TextField(
+                            decoration: InputDecoration(
+                                prefixIcon: const Icon(Icons.email),
+                                filled: true,
+                                fillColor: Colors.grey.shade100,
+                                hintText: 'Email',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                )),
+                            controller: emailController,
+                            onChanged: (value) {
+                              setState(() {
+                                email = value;
+                              }
+                              );
+                            },
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          TextField(
+                            obscureText: true,
+                            controller: passwordController,
+                            decoration: InputDecoration(
+                                prefixIcon: const Icon(Icons.lock),
+                                filled: true,
+                                fillColor: Colors.grey.shade100,
+                                hintText: 'Password',
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12))),
+                            onChanged: (value) {
+                              setState(() {
+                                password = value;
+                              });
+                            },
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              TextButton(
+                                onPressed: () async {
+                                  String result = await FirebaseAuthService.signIn(email!, password!);
+                                  print(result);
+                                  if(result == 'Successfully login'){
+                                    Navigator.of(context).pushReplacementNamed('homePage');
+                                  }else{
+                                    showDialog(context: context, builder: (context){
+                                      return const AlertDialog(
+                                        title: Text('Enter Field Correctly'),
+                                      );
+                                    });
+                                  }
+                                },
+                                child: const Text(
+                                  'Sign In',
+                                  style: TextStyle(
+                                      fontSize: 27,
+                                      fontWeight: FontWeight.w700,
+                                      color: Color(0xff4c505b)),
+                                ),
+                              ),
+                              CircleAvatar(
+                                radius: 20,
+                                backgroundColor: const Color(0xff4c505b),
+                                child: IconButton(
+                                  onPressed: () {},
+                                  icon: const Icon(Icons.arrow_forward),
+                                  color: Colors.white,
+                                ),
+                              )
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.pushNamed(context, 'register');
+                                  },
+                                  child: const Text(
+                                    'Sign Up',
+                                    style: TextStyle(
+                                      decoration: TextDecoration.underline,
+                                      fontSize: 18,
+                                      color: Color(0xff4c505b),
+                                    ),
+                                  )),
+                              TextButton(
+                                  onPressed: () {},
+                                  child: const Text(
+                                    'Forgot Password',
+                                    style: TextStyle(
+                                        decoration: TextDecoration.underline,
+                                        fontSize: 18,
+                                        color: Color(0xff4c505b)),
+                                  )),
+                            ],
+                          ),
+                          ElevatedButton.icon(
+                            onPressed: () async {
+                              //SignIn with google
+                              signInWithGoogle(context);
+                            },
+                            label: const Text(
+                              'Sign In With Google',
+                              style: TextStyle(color: Colors.black54),
+                            ),
+                            style: ButtonStyle(
+                                backgroundColor:
+                                MaterialStateProperty.all(Colors.grey[700])),
+                            icon: const FaIcon(
+                              FontAwesomeIcons.google,
+                              color: Colors.blue,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+              );
+            }else{
+              return Stack(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.only(left: 35, top: 90),
+                    child: const Text(
+                      'Welcome\nBack',
+                      style: TextStyle(color: Colors.white, fontSize: 33),
+                    ),
+                  ),
+                  SingleChildScrollView(
+                    child: Container(
+                      padding: const EdgeInsets.only(top: 300, right: 35, left: 35),
+                      child: Column(
+                        children: [
+                          TextField(
+                            decoration: InputDecoration(
+                                prefixIcon: const Icon(Icons.email),
+                                filled: true,
+                                fillColor: Colors.grey.shade100,
+                                hintText: 'Email',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                )),
+                            controller: emailController,
+                            onChanged: (value) {
+                              setState(() {
+                                email = value;
+                              }
+                              );
+                            },
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          TextField(
+                            obscureText: true,
+                            controller: passwordController,
+                            decoration: InputDecoration(
+                                prefixIcon: const Icon(Icons.lock),
+                                filled: true,
+                                fillColor: Colors.grey.shade100,
+                                hintText: 'Password',
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12))),
+                            onChanged: (value) {
+                              setState(() {
+                                password = value;
+                              });
+                            },
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              TextButton(
+                                onPressed: () async {
+                                  String result = await FirebaseAuthService.signIn(email!, password!);
+                                  print(result);
+                                  if(result == 'Successfully login'){
+                                    Navigator.of(context).pushReplacementNamed('homePage');
+                                  }else{
+                                    showDialog(context: context, builder: (context){
+                                      return const AlertDialog(
+                                        title: Text('Enter Field Correctly'),
+                                      );
+                                    });
+                                  }
+                                },
+                                child: const Text(
+                                  'Sign In',
+                                  style: TextStyle(
+                                      fontSize: 27,
+                                      fontWeight: FontWeight.w700,
+                                      color: Color(0xff4c505b)),
+                                ),
+                              ),
+                              CircleAvatar(
+                                radius: 20,
+                                backgroundColor: const Color(0xff4c505b),
+                                child: IconButton(
+                                  onPressed: () {},
+                                  icon: const Icon(Icons.arrow_forward),
+                                  color: Colors.white,
+                                ),
+                              )
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.pushNamed(context, 'register');
+                                  },
+                                  child: const Text(
+                                    'Sign Up',
+                                    style: TextStyle(
+                                      decoration: TextDecoration.underline,
+                                      fontSize: 18,
+                                      color: Color(0xff4c505b),
+                                    ),
+                                  )),
+                              TextButton(
+                                  onPressed: () {},
+                                  child: const Text(
+                                    'Forgot Password',
+                                    style: TextStyle(
+                                        decoration: TextDecoration.underline,
+                                        fontSize: 18,
+                                        color: Color(0xff4c505b)),
+                                  )),
+                            ],
+                          ),
+                          ElevatedButton.icon(
+                            onPressed: () async {
+                              //SignIn with google
+                              signInWithGoogle(context);
+                            },
+                            label: const Text(
+                              'Sign In With Google',
+                              style: TextStyle(color: Colors.black54),
+                            ),
+                            style: ButtonStyle(
+                                backgroundColor:
+                                MaterialStateProperty.all(Colors.grey[700])),
+                            icon: const FaIcon(
+                              FontAwesomeIcons.google,
+                              color: Colors.blue,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+              );
+            }
+          },
         ),
       ),
     );

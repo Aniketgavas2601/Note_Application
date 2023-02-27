@@ -1,28 +1,94 @@
 
 
+import 'dart:developer';
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/data/latest_10y.dart';
+import 'package:timezone/timezone.dart';
+
+//Notification Initialized Instance
+
+FlutterLocalNotificationsPlugin notificationsPlugin = FlutterLocalNotificationsPlugin();
 
 class NotificationServices{
-  static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
+  //initialized a android setting
   final AndroidInitializationSettings androidInitializationSettings = AndroidInitializationSettings('notification_icon');
+  //initialized ios settings
+  final DarwinInitializationSettings iosInitializationSettings = DarwinInitializationSettings(
+    requestAlertPermission: true,
+    requestBadgePermission: true,
+    requestCriticalPermission: true,
+    requestSoundPermission: true
+  );
 
-  void initializeNotifications() async {
-    InitializationSettings initializationSettings =
-    InitializationSettings(
+  // Both the settings combine and making one initializationSetting
+  void initializedSettings() async {
+    initializeTimeZones();
+    InitializationSettings initializationSettings = InitializationSettings(
       android: androidInitializationSettings,
+      iOS: iosInitializationSettings
     );
+    
+    bool? initialized = await notificationsPlugin.initialize(initializationSettings,
+    onDidReceiveNotificationResponse: (response){
+      log(response.payload.toString());
+    });
 
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    log("Notifiacations: $initialized");
   }
 
-  void sendNotification(String title, String body) async {
-
-    AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails('channelId', 'channelName',importance: Importance.max,priority: Priority.high);
-    NotificationDetails notificationDetails = NotificationDetails(
-        android: androidNotificationDetails
+  static void showNotification(String title, String body) async {
+    //Notification Details for android
+    AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
+        "notifications-note",
+        "Note Notifications",
+      priority: Priority.max,
+      importance: Importance.max
     );
 
-    await flutterLocalNotificationsPlugin.show(0, title, body, notificationDetails);
+    //Notification Details for ios
+    DarwinNotificationDetails iosDetails = DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true
+    );
+
+    //combine Notification Details
+    NotificationDetails notificationDetails = NotificationDetails(
+      android: androidDetails,
+      iOS: iosDetails
+    );
+
+    DateTime scheduledDate = DateTime.now().add(Duration(seconds: 5));
+    //plugin for notifications
+    //await notificationsPlugin.show(0, title, body, notificationDetails);
+    //await notificationsPlugin.schedule(0, title, body, scheduledDate, notificationDetails);
+    await notificationsPlugin.zonedSchedule(
+        0,
+        title,
+        body,
+        TZDateTime.from(scheduledDate, local),
+        notificationDetails,
+        uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.wallClockTime,
+        androidAllowWhileIdle: true,
+      payload: ""
+    );
+    //notificationsPlugin.cancel(0);
+  }
+
+  void checkForNotification() async {
+    NotificationAppLaunchDetails? details = await notificationsPlugin.getNotificationAppLaunchDetails();
+
+    if(details != null){
+      if(details.didNotificationLaunchApp){
+        NotificationResponse? response = details.notificationResponse;
+
+        if(response != null){
+          String? payload = response.payload;
+          log("Notification payload: $payload");
+        }
+      }
+    }
   }
 }

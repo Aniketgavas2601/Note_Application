@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:login_app/services/firebase_note_service.dart';
 import 'package:login_app/services/notification_service.dart';
+import 'package:login_app/services/repository.dart';
 
 class AddNotes extends StatefulWidget {
   const AddNotes({super.key});
@@ -17,7 +18,8 @@ class _AddNotesState extends State<AddNotes> {
 
   @override
   void initState() {
-    notificationServices.initializeNotifications();
+    notificationServices.initializedSettings();
+    notificationServices.checkForNotification();
     super.initState();
   }
 
@@ -33,11 +35,12 @@ class _AddNotesState extends State<AddNotes> {
             actions: <Widget>[
               ElevatedButton(
                   onPressed: () async {
-                    await FirebaseNoteService.addNote(
-                            newNoteTitle.text, newDescription.text)
+                    await Repository.instance.addNote(
+                            newNoteTitle.text, newDescription.text, DateTime.now())
                         .whenComplete(() {
-                      Navigator.pop(context);
-                      notificationServices.sendNotification('Notion', 'Your Note has been added');
+                      Navigator.pop(context, true);
+                      //notificationServices.sendNotification('Notion', 'Your Note has been added');
+                      NotificationServices.showNotification('Notion', 'Your Note has been added');
                     });
                   },
                   child: const Text('Add')),

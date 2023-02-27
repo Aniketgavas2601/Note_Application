@@ -19,11 +19,11 @@ class FirebaseAuthService {
       return "something wrong";
     }
   }
-  static Future<String> signUp(String name, String email, String password, Uint8List? image) async {
+  static Future<String> signUp(String name, String email, String password,Uint8List? image) async {
     try{
-      FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
-          email: email, password: password)
+      FirebaseAuth.instance.
+          createUserWithEmailAndPassword(
+          email: email, password: password,)
           .then(
             (signedInUser) async {
           if (signedInUser.user != null) {
@@ -32,7 +32,7 @@ class FirebaseAuthService {
                 "profileImage", image!);
             print(imageUrl);
 
-            FirebaseFirestore.instance.collection('users').add({
+            FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).set({
               'name': name,
               'email': email,
               'pass': password,

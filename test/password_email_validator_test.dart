@@ -7,7 +7,7 @@ void main(){
     String result = MyValidator.emailValidator('');
     expect(result, 'Please enter email');
   });
-  
+
   test('valid email test', () {
     String result = MyValidator.emailValidator('tony@starkindustries.com');
     expect(result, 'email is valid');

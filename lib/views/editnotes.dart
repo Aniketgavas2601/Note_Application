@@ -1,12 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:login_app/models/note.dart';
 import 'package:login_app/services/firebase_note_service.dart';
+import 'package:login_app/services/repository.dart';
 
 class EditNotes extends StatefulWidget {
 
-  DocumentSnapshot docToEdit;
+  //DocumentSnapshot docToEdit;
 
-  EditNotes({super.key, required this.docToEdit});
+  //EditNotes({super.key, required this.docToEdit});
+  NotesModel note;
+
+  EditNotes({super.key, required this.note});
 
   @override
   State<EditNotes> createState() => _EditNotesState();
@@ -19,8 +24,10 @@ class _EditNotesState extends State<EditNotes> {
 
   @override
   void initState() {
-    newNoteTitle = TextEditingController(text: widget.docToEdit.get('title'));
-    newDescription = TextEditingController(text: widget.docToEdit.get('description'));
+    //newNoteTitle = TextEditingController(text: widget.docToEdit.get('title'));
+    //newDescription = TextEditingController(text: widget.docToEdit.get('description'));
+    newNoteTitle.text = widget.note.title.toString();
+    newDescription.text = widget.note.description.toString();
     super.initState();
   }
 
@@ -50,7 +57,10 @@ class _EditNotesState extends State<EditNotes> {
                     // }).whenComplete(() {
                     //   Navigator.pop(context);
                     // });
-                    FirebaseNoteService.updateNote(widget.docToEdit.reference.id, newNoteTitle.text, newDescription.text);
+                    //FirebaseNoteService.updateNote(widget.docToEdit.reference.id, newNoteTitle.text, newDescription.text);
+                    final notesModel = NotesModel(id: widget.note.id, title: newNoteTitle.text, description: newDescription.text);
+                    Repository.instance.updateNote(notesModel);
+
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
@@ -61,8 +71,12 @@ class _EditNotesState extends State<EditNotes> {
 
               ElevatedButton(onPressed: () async {
                 //widget.docToEdit.reference.delete().whenComplete(() => Navigator.pop(context));
-                FirebaseNoteService.deleteNote(widget.docToEdit.reference.id);
-                Navigator.pop(context);
+                //FirebaseNoteService.deleteNote(widget.docToEdit.reference.id);
+                Repository.instance.deleteNote(widget.note.id.toString()).then((value){
+                  if(mounted){
+                    Navigator.pop(context);
+                  }
+                });
               },style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.lightBlueAccent
               ),
