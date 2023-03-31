@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:login_app/screens/reminder_note_screen.dart';
+import 'package:login_app/screens/archive_notes.dart';
 import 'package:login_app/screens/web_view_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -22,11 +22,13 @@ class _NavBarState extends State<NavBar> {
         .get()
         .then((snapshot) {
       final data = snapshot.data();
-      print(data!['imageUrl']);
-      //print(snapshot['imageUrl']);
-      setState(() {
-        profilePic = data['imageUrl'];
-      });
+      if(data != null){
+        print(data['imageUrl']);
+        //print(snapshot['imageUrl']);
+        setState(() {
+          profilePic = data['imageUrl'];
+        });
+      }
     });
   }
 
@@ -43,7 +45,7 @@ class _NavBarState extends State<NavBar> {
         children: <Widget>[
           Container(
             width: double.infinity,
-            padding: EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
             color: Colors.lightBlueAccent,
             child: Center(
               child: Column(
@@ -53,7 +55,7 @@ class _NavBarState extends State<NavBar> {
                       imageBuilder: (context, imageProvider) =>  Container(
                         width: 100,
                         height: 100,
-                        margin: EdgeInsets.only(top: 30),
+                        margin: const EdgeInsets.only(top: 30),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           image: DecorationImage(
@@ -62,37 +64,45 @@ class _NavBarState extends State<NavBar> {
                           ),
                         ),
                       ),
-                    placeholder: (context,url) => Center(child: CircularProgressIndicator(),),
+                    placeholder: (context,url) => const Center(child: CircularProgressIndicator(),),
                   ) : Container(),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   Text(
                     user!.email.toString(),
-                    style: TextStyle(fontSize: 20, color: Colors.white),
+                    style: const TextStyle(fontSize: 20, color: Colors.white),
                   )
                 ],
               ),
             ),
           ),
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => WebView()));
-            },
-            child: ListTile(
-              leading: Icon(Icons.info),
-              title: Text(
-                'about',
-                style: TextStyle(color: Colors.black54, fontSize: 20),
+          Column(
+            children: <Widget>[
+              GestureDetector(
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => ArchiveNotes()));
+                },
+                child: const ListTile(
+                  leading: Icon(Icons.archive),
+                  title: Text('Archive'),
+                ),
               ),
-            ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context, MaterialPageRoute(builder: (context) => WebView()));
+                },
+                child: const ListTile(
+                  leading: Icon(Icons.info),
+                  title: Text(
+                    'about',
+                    style: TextStyle(color: Colors.black54, fontSize: 20),
+                  ),
+                ),
+              ),
+            ],
           ),
-          GestureDetector(
-              onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => ReminderNoteScreen()));
-              },
-              child: Text("Ehllo")),
         ],
       ),
     );

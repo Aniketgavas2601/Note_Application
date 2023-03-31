@@ -2,7 +2,7 @@ import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:login_app/models/note.dart';
-import 'package:login_app/views/editnotes.dart';
+
 
 
 
@@ -12,8 +12,9 @@ class NoteList extends StatelessWidget {
   final List<NotesModel> noteList;
 
   final Function(NotesModel) callback;
+  final Function(NotesModel) onLongPress;
 
-  const NoteList({super.key, required this.noteList, required this.callback});
+  const NoteList({super.key, required this.noteList, required this.callback, required this.onLongPress});
 
 
   @override
@@ -27,6 +28,10 @@ class NoteList extends StatelessWidget {
         return GestureDetector(
           onTap: (){
             callback(note);
+          },
+          onLongPress: (){
+            onLongPress(note);
+            //Repository.instance.updateIsArchived(note);
           },
           child: Card(
             color: Colors.lightGreen,

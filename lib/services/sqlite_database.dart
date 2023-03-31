@@ -20,7 +20,7 @@ class SqlFliteService {
 
   Future<Database> initializeDatabase() async {
     io.Directory documentDirectory = await getApplicationDocumentsDirectory();
-    String path = join(documentDirectory.path, 'notes.db');
+    String path = join(documentDirectory.path, 'notes.db');     // it creates a path and db name
     var db = await openDatabase(path,version: 1,onCreate: _onCreate);
     return db;
   }
@@ -47,7 +47,7 @@ class SqlFliteService {
 
   Future<List<LocalNoteModel>> getAsyncNotesList() async {
     var dbClient = await db;
-    final List<Map<String, Object?>> queryResult = await dbClient!.query('notes',where: 'isSynced', whereArgs: [0]);
+    final List<Map<String, Object?>> queryResult = await dbClient!.query('notes',where: 'isSynced', whereArgs: [1]);
 
     return queryResult.map((e) => LocalNoteModel.fromMap(e)).toList();
   }

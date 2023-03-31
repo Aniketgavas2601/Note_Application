@@ -10,17 +10,17 @@ final FirebaseAuth auth = FirebaseAuth.instance;
 Future<bool?> signInWithGoogle(BuildContext context) async {
   try {
     final GoogleSignInAccount? googleSignInAccount =
-        await googleSignIn.signIn();
+        await googleSignIn.signIn();                              // pop up to choose your google account
 
     if (googleSignInAccount != null) {
       GoogleSignInAuthentication googleSignInAuthentication =
-          await googleSignInAccount.authentication;
+          await googleSignInAccount.authentication;              //getting authentication details
 
-      final AuthCredential credential = GoogleAuthProvider.credential(
+      final AuthCredential credential = GoogleAuthProvider.credential(          //create a new credential
           accessToken: googleSignInAuthentication.accessToken,
           idToken: googleSignInAuthentication.idToken);
       final UserCredential authResult =
-          await auth.signInWithCredential(credential);
+          await auth.signInWithCredential(credential);       //return the user credential
 
       final User? user = authResult.user;
 
@@ -39,7 +39,6 @@ Future<bool?> signInWithGoogle(BuildContext context) async {
           Navigator.pushNamed(context, 'homePage');
         } else {
           //new user
-
           users.doc(user.uid).set(userData);
           Navigator.pushNamed(context, 'homePage');
         }

@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:login_app/models/note.dart';
-import 'package:login_app/widgets/note_list_screen.dart';
+import 'package:login_app/widgets/note_list.dart';
 
 class SearchNotes extends StatefulWidget {
   const SearchNotes({Key? key}) : super(key: key);
@@ -51,7 +51,7 @@ class _SearchNotesState extends State<SearchNotes> {
       ),
       body: NoteList(noteList: searchResult,callback: (searchNote){
 
-      },)
+      },onLongPress: (value){},)
 
     );
   }

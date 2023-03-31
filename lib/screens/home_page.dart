@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -5,9 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:login_app/models/note.dart';
 import 'package:login_app/screens/sidebar_menu.dart';
 import 'package:login_app/services/firebase_auth_service.dart';
+import 'package:login_app/services/repository.dart';
 import 'package:login_app/views/editnotes.dart';
 import 'package:login_app/views/search_notes.dart';
-import 'package:login_app/widgets/note_list_screen.dart';
+import 'package:login_app/widgets/note_list.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -36,7 +38,6 @@ class _HomePageState extends State<HomePage> {
         Navigator.pushNamed(context, routeMessage);
       }
     });
-
     //foreground
     FirebaseMessaging.onMessage.listen((message) {
       if(message.notification != null){
@@ -54,15 +55,29 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+
   Future<List<NotesModel>>? fetchNotes() async {
-    return await FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).collection('notes').get().then((snapshot) {
-      return snapshot.docs.map((e) => NotesModel.fromQuerySnapshot(e)).toList();
+    print("fetch");
+    final ref = FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).collection('notes');
+    return await ref.
+    where('isDeleted', isEqualTo: false).where('isArchive', isEqualTo: false).
+    get().then((snapshot) async {
+      print("snapshot");
+      return await snapshot.docs.map((e) => NotesModel.fromQuerySnapshot(e)).toList();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      onDrawerChanged: (isClosed){
+        log("on change Drawer is $isClosed");
+        if(!isClosed){
+          setState(() {
+            
+          });
+        }
+      },
       drawer: NavBar(),
       appBar: AppBar(
         backgroundColor: Colors.lightBlueAccent,
@@ -104,7 +119,14 @@ class _HomePageState extends State<HomePage> {
             setState(() {
 
             });
-          },);
+          },onLongPress: (note) async {
+            await Repository.instance.updateIsArchived(note);
+            setState(() {
+
+            });
+          },
+          );
+
         },
       ),
       floatingActionButton: FloatingActionButton(

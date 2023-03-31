@@ -24,8 +24,6 @@ class _EditNotesState extends State<EditNotes> {
 
   @override
   void initState() {
-    //newNoteTitle = TextEditingController(text: widget.docToEdit.get('title'));
-    //newDescription = TextEditingController(text: widget.docToEdit.get('description'));
     newNoteTitle.text = widget.note.title.toString();
     newDescription.text = widget.note.description.toString();
     super.initState();

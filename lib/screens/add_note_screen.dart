@@ -13,6 +13,8 @@ class AddNotes extends StatefulWidget {
 class _AddNotesState extends State<AddNotes> {
   TextEditingController newNoteTitle = TextEditingController();
   TextEditingController newDescription = TextEditingController();
+  bool isArchive = false;
+  bool isDeleted = false;
 
   NotificationServices notificationServices = NotificationServices();
 
@@ -36,11 +38,11 @@ class _AddNotesState extends State<AddNotes> {
               ElevatedButton(
                   onPressed: () async {
                     await Repository.instance.addNote(
-                            newNoteTitle.text, newDescription.text, DateTime.now())
+                            newNoteTitle.text, newDescription.text, DateTime.now(),isArchive,isDeleted)
                         .whenComplete(() {
                       Navigator.pop(context, true);
                       //notificationServices.sendNotification('Notion', 'Your Note has been added');
-                      NotificationServices.showNotification('Notion', 'Your Note has been added');
+                      //NotificationServices.showNotification('Notion', 'Your Note has been added');
                     });
                   },
                   child: const Text('Add')),

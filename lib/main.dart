@@ -5,18 +5,9 @@ import 'package:login_app/screens/add_note_screen.dart';
 import 'package:login_app/screens/login.dart';
 import 'package:login_app/screens/register.dart';
 import 'package:login_app/screens/home_page.dart';
-import 'package:login_app/widgets/note_list_screen.dart';
+import 'package:login_app/utils/internet_connection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-// void main() => runApp(MaterialApp(
-//   debugShowCheckedModeBanner: false,
-//   initialRoute: 'login',
-//   routes: {
-//     'login': (context) => MyLogin(),
-//     'register': (context) => MyRegister(),
-//     'logout' : (context) => LogOut()
-//   },
-// ));
 
 // Receive Message when app is in background for on message
  Future<void> backgroundHandler(RemoteMessage message) async {

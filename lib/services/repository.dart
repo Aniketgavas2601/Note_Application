@@ -1,10 +1,10 @@
 import 'dart:developer';
 
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:login_app/models/note.dart';
 import 'package:login_app/services/firebase_note_service.dart';
 import 'package:login_app/services/sqlite_database.dart';
 import 'package:login_app/utils/internet_connection.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:uuid/uuid.dart';
 
 
@@ -13,12 +13,14 @@ class Repository {
   Repository._();
   static final instance = Repository._();
 
-  Future<void> addNote(String title, String description, DateTime date) async {
+  Future<void> addNote(String title, String description, DateTime date, bool isArchive, bool isDeleted) async {
     if(InternetConnection.instance.isDeviceConnected){
-      final id = await FirebaseNoteService.addNote(title, description);
+      print("########################");
+      final id = await FirebaseNoteService.addNote(title, description, isArchive,isDeleted);
       final localNoteModel = LocalNoteModel(id, title, description, true);
       SqlFliteService.instance.insert(localNoteModel);
     }else{
+      print("&&&&&&&&&&&&&&&&&&&&&&&&");
       final uuid = Uuid().v4();
       final localNoteModel = LocalNoteModel(uuid, title, description, false);
       SqlFliteService.instance.insert(localNoteModel);
@@ -38,5 +40,9 @@ class Repository {
       SqlFliteService.instance.update(localNoteModel);
 
     });
+  }
+
+  Future<void> updateIsArchived(NotesModel notesModel) async {
+    await FirebaseNoteService.instance.updateIsArchived(notesModel);
   }
 }

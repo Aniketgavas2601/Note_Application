@@ -1,34 +1,35 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:login_app/models/note.dart';
 import 'package:uuid/uuid.dart';
 
 class FirebaseNoteService{
-  static final  ref = FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).collection('notes');
-  
-  // static Future<void> addNote(String title, String description) async {
-  //   await document.set({
-  //     'id': document.id,
-  //     'title': title,
-  //     'description': description,
-  //   });
-  //   // ref.add({
-  //   //   'title': title,
-  //   //   'description': description,
-  //   // });
-  // }
+  FirebaseNoteService._();
+  static final instance =  FirebaseNoteService._();
 
-  static Future<String> addNote(String title, String description) async{
+
+  static final  ref = FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).collection('notes');
+
+  static Future<String> addNote(String title, String description, bool isArchive, bool isDeleted) async{
 
     final uuid = Uuid().v4();
 
-    DocumentReference document = ref.doc(uuid);
-    await ref.doc(uuid).set({
+    //DocumentReference document = ref.doc(uuid);
+    final document = FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).collection('notes');
+    var data = {
       'id': uuid,
       'title': title,
       'description': description,
-      'date': DateTime.now()
-    });
+      'date': DateTime.now(),
+      'isArchive': isArchive,
+      'isDeleted': isDeleted
+    };
+
+    await document.doc(uuid).set(
+      data
+    );
     return uuid;
   }
 
@@ -45,7 +46,10 @@ class FirebaseNoteService{
 
   static Future<void> deleteNote(String docId) async{
     try{
-      await ref.doc(docId).delete();
+      final document = await ref.doc(docId);
+      await document.update({
+        'isDeleted': true,
+      });
     }catch(e){
       print(e);
     }
@@ -61,15 +65,22 @@ class FirebaseNoteService{
     });
   }
 
-  static List<NotesModel> list = [];
+  //update the data is archive or not
+  Future<void> updateIsArchived(NotesModel notesModel) async {
+    log(notesModel.isArchive.toString());
+    final isArchive = notesModel.isArchive ?? false;
+    log("inside Archive Method");
+    log(isArchive.toString());
 
-  // static fetchNotes() async {
-  //   final snapshot = await ref.get();
-  //   print("**************************************************${snapshot.docs.length}");
-  //    snapshot.docs.forEach((element) {
-  //      final note = NotesModel.fromQuerySnapshot(element);
-  //      list.add(note);
-  //    });
-  //    //print("######################################${list.toString()}");
-  // }
+    var data = {
+      'id': notesModel.id,
+      'title': notesModel.title,
+      'description': notesModel.description,
+      'date': DateTime.now(),
+      'isArchive': !isArchive,
+      'isDeleted': notesModel.isDeleted
+    };
+
+    await ref.doc(notesModel.id).update(data);
+  }
  }

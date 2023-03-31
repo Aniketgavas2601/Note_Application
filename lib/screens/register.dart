@@ -15,9 +15,9 @@ class _MyRegisterState extends State<MyRegister> {
 
   Uint8List? image;
 
-  String? name;
-  String? email;
-  String? password;
+  TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
 
   void selectImage() async {
     Uint8List im = await pickImage(ImageSource.gallery);
@@ -77,6 +77,7 @@ class _MyRegisterState extends State<MyRegister> {
                       height: 20,
                     ),
                     TextField(
+                      controller: nameController,
                       decoration: InputDecoration(
                           prefixIcon: const Icon(Icons.person_outline),
                           enabledBorder: OutlineInputBorder(
@@ -96,16 +97,12 @@ class _MyRegisterState extends State<MyRegister> {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                           )),
-                      onChanged: (value) {
-                        setState(() {
-                          name = value;
-                        });
-                      },
                     ),
                     const SizedBox(
                       height: 10,
                     ),
                     TextField(
+                      controller: emailController,
                       decoration: InputDecoration(
                           prefixIcon: const Icon(Icons.email),
                           enabledBorder: OutlineInputBorder(
@@ -125,16 +122,12 @@ class _MyRegisterState extends State<MyRegister> {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                           )),
-                      onChanged: (value) {
-                        setState(() {
-                          email = value;
-                        });
-                      },
                     ),
                     const SizedBox(
                       height: 10,
                     ),
                     TextField(
+                      controller: passwordController,
                       obscureText: true,
                       decoration: InputDecoration(
                           prefixIcon: const Icon(Icons.lock),
@@ -155,11 +148,6 @@ class _MyRegisterState extends State<MyRegister> {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                           )),
-                      onChanged: (value) {
-                        setState(() {
-                          password = value;
-                        });
-                      },
                     ),
                     const SizedBox(
                       height: 20,
@@ -170,9 +158,11 @@ class _MyRegisterState extends State<MyRegister> {
                       children: [
                         TextButton(
                           onPressed: () async {
-                            String message = await FirebaseAuthService.signUp(name!, email!, password!, image);
+                            String message = await FirebaseAuthService.signUp(nameController.text, emailController.text, passwordController.text, image);
                             if(message == "Success"){
-                              Navigator.pushNamed(context, 'login');
+                              if(mounted){
+                                Navigator.pushNamed(context, 'login');
+                              }
                             }else{
                               await showDialog(context: context, builder: (context) {
                                 return const AlertDialog(title: Text('Something went Wrong'),);

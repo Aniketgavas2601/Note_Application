@@ -13,9 +13,9 @@ FlutterLocalNotificationsPlugin notificationsPlugin = FlutterLocalNotificationsP
 class NotificationServices{
 
   //initialized a android setting
-  final AndroidInitializationSettings androidInitializationSettings = AndroidInitializationSettings('notification_icon');
+  final AndroidInitializationSettings androidInitializationSettings = const AndroidInitializationSettings('notification_icon');
   //initialized ios settings
-  final DarwinInitializationSettings iosInitializationSettings = DarwinInitializationSettings(
+  final DarwinInitializationSettings iosInitializationSettings = const DarwinInitializationSettings(
     requestAlertPermission: true,
     requestBadgePermission: true,
     requestCriticalPermission: true,
@@ -40,7 +40,7 @@ class NotificationServices{
 
   static void showNotification(String title, String body) async {
     //Notification Details for android
-    AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
+    AndroidNotificationDetails androidDetails = const AndroidNotificationDetails(
         "notifications-note",
         "Note Notifications",
       priority: Priority.max,
@@ -48,7 +48,7 @@ class NotificationServices{
     );
 
     //Notification Details for ios
-    DarwinNotificationDetails iosDetails = DarwinNotificationDetails(
+    DarwinNotificationDetails iosDetails = const DarwinNotificationDetails(
       presentAlert: true,
       presentBadge: true,
       presentSound: true
@@ -60,7 +60,7 @@ class NotificationServices{
       iOS: iosDetails
     );
 
-    DateTime scheduledDate = DateTime.now().add(Duration(seconds: 5));
+    DateTime scheduledDate = DateTime.now().add(const Duration(seconds: 5));
     //plugin for notifications
     //await notificationsPlugin.show(0, title, body, notificationDetails);
     //await notificationsPlugin.schedule(0, title, body, scheduledDate, notificationDetails);
